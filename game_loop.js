@@ -210,6 +210,5 @@ function loopHandler() { // game loop!
 		setTimeout(loopHandler, 100);
 	}
 }
-//Change 2
 
 loopHandler(); //actually start
