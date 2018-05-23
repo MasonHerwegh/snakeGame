@@ -90,21 +90,14 @@ function game(currentCanvas) {
 		for (var i = 0; i < this.snakeTiles.length; i++) {
 			//TODO: combine lose conditions into one if statement
 			//If snake has collided with itself you lose
-			if (newHead.tileX == this.snakeTiles[i].tileX && newHead.tileY == this.snakeTiles[i].tileY) {
+			if (newHead.tileX == this.snakeTiles[i].tileX && newHead.tileY == this.snakeTiles[i].tileY || newHead.tileX <= 0 || newHead.tileY <= 0 || newHead.tileX >= this.colCount - 1 || newHead.tileY >= this.rowCount - 1) {
 				//snake has collided with self!
 				console.log("Hey bro, don't run into yourself, you lose now");
 				this.gameOver = true;
 			}
 
-			//If snake has collided with the wall you lose
-			if (newHead.tileX <= 0 || newHead.tileY <= 0 || newHead.tileX >= this.colCount - 1 || newHead.tileY >= this.rowCount - 1) {
-				//snake has collided with a wall
-				console.log("Hey bro, don't run into walls, you lose now");
-				this.gameOver = true;
-			}
-			
 			//If snake has collided with food it grows
-			if (newHead.tileX == this.foodCoordX && newHead.tileY == this.foodCoordY) {
+			if (newHead.tileX == this.foodCoords[0] && newHead.tileY == this.foodCoords[1]) {
 				console.log("Score++");
 				this.snakeGrow();
 				this.moveFood();
