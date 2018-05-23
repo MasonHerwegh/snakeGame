@@ -21,8 +21,7 @@ function game(currentCanvas) {
 	this.snakeDirection = "up";
 	this.gameOver = false;
 	this.food = 0;
-	this.foodCoordX = 0;
-	this.foodCoordY = 0;
+	this.score = 0;
 
 	this.snakeTiles.push(new snakeTile(this.colCount / 2, this.rowCount / 2));
 	
@@ -88,17 +87,16 @@ function game(currentCanvas) {
 		
 		// detect if snake has collided with itself or a wall or a food
 		for (var i = 0; i < this.snakeTiles.length; i++) {
-			//TODO: combine lose conditions into one if statement
 			//If snake has collided with itself you lose
 			if (newHead.tileX == this.snakeTiles[i].tileX && newHead.tileY == this.snakeTiles[i].tileY || newHead.tileX <= 0 || newHead.tileY <= 0 || newHead.tileX >= this.colCount - 1 || newHead.tileY >= this.rowCount - 1) {
-				//snake has collided with self!
+				//snake has collided with self or wall!
 				console.log("Hey bro, don't run into yourself, you lose now");
 				this.gameOver = true;
 			}
 
 			//If snake has collided with food it grows
 			if (newHead.tileX == this.foodCoords[0] && newHead.tileY == this.foodCoords[1]) {
-				console.log("Score++");
+				this.score++;
 				this.snakeGrow();
 				this.moveFood();
 			}
@@ -175,7 +173,6 @@ var snakeBoard = new game(tile.prototype.c);
 snakeBoard.moveFood();
 snakeBoard.renderAll();
 
-// vvvvvvvvv EVENT HANDLER CODE GOES HERE vvvvvvvvv
 
 function snakeMoveHandler(event) {
 
@@ -203,6 +200,11 @@ function loopHandler() { // game loop!
 
 	snakeBoard.snakeMove();
 	snakeBoard.renderAll();
+	
+	//Puts Score on screen
+	snakeBoard.ctx.font = "11px Arial";
+	snakeBoard.ctx.fillStyle = "White";
+	snakeBoard.ctx.fillText("Score: " + snakeBoard.score, 300, 9);
 
 	if (snakeBoard.gameOver) {
 		console.log("You lose, good day sir!");
