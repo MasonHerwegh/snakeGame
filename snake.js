@@ -4,7 +4,7 @@ function buttonMaker(buttonId, buttonColor, textColor, buttonText, bCoord1, bCoo
 	this.buttonColor = buttonColor;
 	this.textColor = textColor;
 	this.buttonText = buttonText;
-	this.tileC = tile.prototype.c
+	this.tileC = tile.prototype.c;
 	this.snakeCtx = this.tileC.getContext("2d");
 	
 	this.snakeCtx.fillStyle=buttonColor;
@@ -18,8 +18,8 @@ function buttonMaker(buttonId, buttonColor, textColor, buttonText, bCoord1, bCoo
 	let buttonElement = document.createElement("div");
 	buttonElement.id = buttonId;
 	buttonElement.style.display = "block";
-	buttonElement.style.width = bCoord2[0] - bCoord1[0] + "px";
-	buttonElement.style.height = bCoord2[1] - bCoord1[1] + "px";
+	buttonElement.style.width = bCoord2[0] + "px";
+	buttonElement.style.height = bCoord2[1] + "px";
 	buttonElement.style.top = bCoord1[0] + "px";
 	buttonElement.style.left = bCoord1[1] + "px";
 	buttonElement.style.position = "absolute";
@@ -29,8 +29,9 @@ function buttonMaker(buttonId, buttonColor, textColor, buttonText, bCoord1, bCoo
 var playButton = new buttonMaker("playButton", "green", "black", "Play", [20, 20], [100, 50], [30, 57]);
 
 document.getElementById("playButton").onclick = function() {
-	this.tileC = tile.prototype.c
+	this.tileC = tile.prototype.c;
 	this.snakeCtx = this.tileC.getContext("2d");
 	this.snakeCtx.clearRect(0, 0, this.tileC.width, this.tileC.height);
+	document.getElementById("playButton").parentNode.removeChild(document.getElementById("playButton"));
 	loopHandler();
 }

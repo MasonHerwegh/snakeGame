@@ -11,7 +11,7 @@ function game(currentCanvas) {
 	this.ctx = this.c.getContext("2d");
 	this.scale = 10;
 	this.c.width = 400;
-	this.c.height = 800;
+	this.c.height = 600;
 
 	this.rowCount = Math.floor(this.c.height / this.scale);
 	this.colCount = Math.floor(this.c.width / this.scale);
