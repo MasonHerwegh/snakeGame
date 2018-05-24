@@ -23,6 +23,7 @@ function game(currentCanvas) {
 	this.food = 0;
 	this.score = 0;
 
+	//Initialize Snake
 	this.snakeTiles.push(new snakeTile(this.colCount / 2, this.rowCount / 2));
 	
 	for (i = 0; i < this.colCount; i++) {
@@ -51,7 +52,7 @@ function game(currentCanvas) {
 			this.foodCoords = [this.getRndInteger(1, this.colCount - 2), this.getRndInteger(1, this.rowCount - 2)];
 			
 			for(i = 0; i < snakeCoords.length; i++) {
-				if(snakeCoords[i][0] == this.foodCoordX && snakeCoords[i][1] == this.foodCoordY) {
+				if(snakeCoords[i][0] == this.foodCoords[0] && snakeCoords[i][1] == this.foodCoords[1]s) {
 					overlapFlag = true;
 				}
 			}
@@ -90,7 +91,6 @@ function game(currentCanvas) {
 			//If snake has collided with itself you lose
 			if (newHead.tileX == this.snakeTiles[i].tileX && newHead.tileY == this.snakeTiles[i].tileY || newHead.tileX <= 0 || newHead.tileY <= 0 || newHead.tileX >= this.colCount - 1 || newHead.tileY >= this.rowCount - 1) {
 				//snake has collided with self or wall!
-				console.log("Hey bro, don't run into yourself, you lose now");
 				this.gameOver = true;
 			}
 
@@ -208,6 +208,17 @@ function loopHandler() { // game loop!
 
 	if (snakeBoard.gameOver) {
 		console.log("You lose, good day sir!");
+		snakeBoard.ctx.font = "40px Arial";
+		snakeBoard.ctx.fillStyle = "black";
+		snakeBoard.ctx.fillText("You Lose!", 120, 250);
+
+		snakeBoard.snakeTiles = [];
+		snakeBoard.snakeDirection = "up";
+		//reinitializes snake
+		snakeBoard.snakeTiles.push(new snakeTile(snakeBoard.colCount / 2, snakeBoard.rowCount / 2));
+
+		var playButton = new buttonMaker("playButton", "green", "black", "Play", [160, 270], [100, 50]);
+		playButtonClick();
 	} else {
 		setTimeout(loopHandler, 100);
 	}
