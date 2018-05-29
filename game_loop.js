@@ -106,7 +106,7 @@ function game(currentCanvas) {
 			}
 		}
 
-		if (!this.gameOver && !this.gameWon) { //if we haven't lost by collision...
+		if (!this.gameOver && !this.gameWon && !this.gamePause) { //if we haven't lost by collision...
 			this.snakeTiles.unshift(newHead); //add new head tile to front of snakeTiles
 			this.snakeTiles.pop();	//remove old tail tile from end of snakeTiles
 		}
@@ -195,6 +195,10 @@ function snakeMoveHandler(event) {
 	if (event.keyCode == 40) {
 		snakeBoard.snakeDirection = "down";
 	}
+
+	if (event.keyCode == 16) {
+		snakeBoard.gamePause = true;
+	}
 }
 
 function loopHandler() { // game loop!
@@ -235,6 +239,14 @@ function loopHandler() { // game loop!
 
 		var playButton = new buttonMaker("playButton", "green", "black", "Play", [160, 270], [100, 50]);
 		playButtonClick();
+	} else if (snakeBoard.gamePause) {
+		console.log("pause");
+		snakeBoard.ctx.font = "40px Arial";
+		snakeBoard.ctx.fillStyle = "black";
+		snakeBoard.ctx.fillText("Paused", 120, 250);
+
+		var unpauseButton = new buttonMaker("unpauseButton", "green", "black", "Play", [160, 270], [100, 50]);
+		unpauseButtonClick();
 	} else {
 		setTimeout(loopHandler, 100);
 	}

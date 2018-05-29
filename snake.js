@@ -42,4 +42,16 @@ function playButtonClick(){
 	}
 }
 
+function unpauseButtonClick() {
+	document.getElementById("unpauseButton").onclick = function() {
+		console.log("click");
+		this.tileC = tile.prototype.c;
+		this.snakeCtx = this.tileC.getContext("2d");
+		this.snakeCtx.clearRect(0, 0, this.tileC.width, this.tileC.height);
+		document.getElementById("unpauseButton").parentNode.removeChild(document.getElementById("unpauseButton"));
+		snakeBoard.gamePause = false;
+		loopHandler();
+	}
+}
+
 playButtonClick();
