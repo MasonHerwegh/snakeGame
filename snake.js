@@ -35,7 +35,9 @@ function playButtonClick(){
 		this.snakeCtx = this.tileC.getContext("2d");
 		this.snakeCtx.clearRect(0, 0, this.tileC.width, this.tileC.height);
 		document.getElementById("playButton").parentNode.removeChild(document.getElementById("playButton"));
+		snakeBoard.score = 0;
 		snakeBoard.gameOver = false;
+		snakeBoard.gameWon = false;
 		loopHandler();
 	}
 }

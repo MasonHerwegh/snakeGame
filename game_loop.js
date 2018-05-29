@@ -52,7 +52,7 @@ function game(currentCanvas) {
 			this.foodCoords = [this.getRndInteger(1, this.colCount - 2), this.getRndInteger(1, this.rowCount - 2)];
 			
 			for(i = 0; i < snakeCoords.length; i++) {
-				if(snakeCoords[i][0] == this.foodCoords[0] && snakeCoords[i][1] == this.foodCoords[1]s) {
+				if(snakeCoords[i][0] == this.foodCoords[0] && snakeCoords[i][1] == this.foodCoords[1]) {
 					overlapFlag = true;
 				}
 			}
@@ -100,9 +100,13 @@ function game(currentCanvas) {
 				this.snakeGrow();
 				this.moveFood();
 			}
+
+			if (this.score == 5) {
+				this.gameWon = true;
+			}
 		}
 
-		if (!this.gameOver) { //if we haven't lost by collision...
+		if (!this.gameOver && !this.gameWon) { //if we haven't lost by collision...
 			this.snakeTiles.unshift(newHead); //add new head tile to front of snakeTiles
 			this.snakeTiles.pop();	//remove old tail tile from end of snakeTiles
 		}
@@ -211,6 +215,18 @@ function loopHandler() { // game loop!
 		snakeBoard.ctx.font = "40px Arial";
 		snakeBoard.ctx.fillStyle = "black";
 		snakeBoard.ctx.fillText("You Lose!", 120, 250);
+
+		snakeBoard.snakeTiles = [];
+		snakeBoard.snakeDirection = "up";
+		//reinitializes snake
+		snakeBoard.snakeTiles.push(new snakeTile(snakeBoard.colCount / 2, snakeBoard.rowCount / 2));
+
+		var playButton = new buttonMaker("playButton", "green", "black", "Play", [160, 270], [100, 50]);
+		playButtonClick();
+	} else if (snakeBoard.gameWon) {
+		snakeBoard.ctx.font = "40px Arial";
+		snakeBoard.ctx.fillStyle = "black";
+		snakeBoard.ctx.fillText("You Win!", 120, 250);
 
 		snakeBoard.snakeTiles = [];
 		snakeBoard.snakeDirection = "up";
