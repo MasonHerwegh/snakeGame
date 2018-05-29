@@ -196,7 +196,7 @@ function snakeMoveHandler(event) {
 		snakeBoard.snakeDirection = "down";
 	}
 
-	if (event.keyCode == 16) {
+	if (event.keyCode == 16 && !snakeBoard.gameWon && !snakeBoard.gameOver) {
 		snakeBoard.gamePause = true;
 	}
 }
