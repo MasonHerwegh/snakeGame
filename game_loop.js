@@ -214,7 +214,7 @@ function loopHandler() { // game loop!
 	snakeBoard.ctx.fillStyle = "White";
 	snakeBoard.ctx.fillText("Score: " + snakeBoard.score, 300, 9);
 
-	if (snakeBoard.gameOver) {
+	if (snakeBoard.gameOver) {	//TODO: merge gameOver, gameWon, and gamePause flags
 		console.log("You lose, good day sir!");
 		snakeBoard.ctx.font = "40px Arial";
 		snakeBoard.ctx.fillStyle = "black";
