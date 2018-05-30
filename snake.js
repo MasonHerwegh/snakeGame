@@ -15,22 +15,20 @@ function buttonMaker(buttonId, buttonColor, textColor, buttonText, bCoord1, bCoo
 	this.snakeCtx.font="40px Arial";
 	this.snakeCtx.fillText(buttonText, bCoord1[0] + 10, bCoord1[1] + 37);
 
-	//TODO: make buttonElement.style a variable
 	let buttonElement = document.createElement("div");
+	let buttonStyle = buttonElement.style;
 	buttonElement.id = buttonId;
-	buttonElement.style.display = "block";
-	buttonElement.style.width = bCoord2[0] + "px";
-	buttonElement.style.height = bCoord2[1] + "px";
-	buttonElement.style.top = bCoord1[1] + "px";
-	buttonElement.style.left = bCoord1[0] + "px";
-	buttonElement.style.position = "absolute";
+	buttonStyle.display = "block";
+	buttonStyle.width = bCoord2[0] + "px";
+	buttonStyle.height = bCoord2[1] + "px";
+	buttonStyle.top = bCoord1[1] + "px";
+	buttonStyle.left = bCoord1[0] + "px";
+	buttonStyle.position = "absolute";
 	document.body.appendChild(buttonElement);
 }
 
 var playButton = new buttonMaker("playButton", "green", "black", "Play", [20, 20], [100, 50]);
 
-
-//TODO: Merge playButtonClick and unpauseButtonClick into one function
 function buttonClick(name, restart){
 	document.getElementById(name).onclick = function() {
 		console.log("click");
