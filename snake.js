@@ -31,30 +31,22 @@ var playButton = new buttonMaker("playButton", "green", "black", "Play", [20, 20
 
 
 //TODO: Merge playButtonClick and unpauseButtonClick into one function
-function playButtonClick(){
-	document.getElementById("playButton").onclick = function() {
+function buttonClick(name, restart){
+	document.getElementById(name).onclick = function() {
 		console.log("click");
 		this.tileC = tile.prototype.c;
 		this.snakeCtx = this.tileC.getContext("2d");
-		this.snakeCtx.clearRect(0, 0, this.tileC.width, this.tileC.height);
-		document.getElementById("playButton").parentNode.removeChild(document.getElementById("playButton"));
-		snakeBoard.score = 0;
+		document.getElementById(name).parentNode.removeChild(document.getElementById(name));
 		snakeBoard.gameOver = false;
 		snakeBoard.gameWon = false;
-		loopHandler();
-	}
-}
-
-function unpauseButtonClick() {
-	document.getElementById("unpauseButton").onclick = function() {
-		console.log("click");
-		this.tileC = tile.prototype.c;
-		this.snakeCtx = this.tileC.getContext("2d");
-		this.snakeCtx.clearRect(0, 0, this.tileC.width, this.tileC.height);
-		document.getElementById("unpauseButton").parentNode.removeChild(document.getElementById("unpauseButton"));
 		snakeBoard.gamePause = false;
+		if (restart) {
+			this.snakeCtx.clearRect(0, 0, this.tileC.width, this.tileC.height);
+			snakeBoard.score = 0;
+		}
+
 		loopHandler();
 	}
 }
 
-playButtonClick();
+buttonClick("playButton", true);

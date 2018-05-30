@@ -40,6 +40,7 @@ function game(currentCanvas) {
     		return Math.floor(Math.random() * (max - min) ) + min;
 	};
 	
+	//TODO: Move moveFood out of game object
 	this.moveFood = function() {
 		let snakeCoords = [];
 		let overlapFlag = false;
@@ -79,6 +80,7 @@ function game(currentCanvas) {
 	};
 	
 	//When an arrow key is pressed their x or y coordinate goes up or down by 1
+	//TODO: move snakeMove function out of game object
 	this.snakeMove = function() {
 		let deltas = this.delta("move");
 
@@ -226,7 +228,7 @@ function loopHandler() { // game loop!
 		snakeBoard.snakeTiles.push(new snakeTile(snakeBoard.colCount / 2, snakeBoard.rowCount / 2));
 
 		var playButton = new buttonMaker("playButton", "green", "black", "Play", [160, 270], [100, 50]);
-		playButtonClick();
+		buttonClick("playButton", true);
 	} else if (snakeBoard.gameWon) {
 		snakeBoard.ctx.font = "40px Arial";
 		snakeBoard.ctx.fillStyle = "black";
@@ -238,7 +240,7 @@ function loopHandler() { // game loop!
 		snakeBoard.snakeTiles.push(new snakeTile(snakeBoard.colCount / 2, snakeBoard.rowCount / 2));
 
 		var playButton = new buttonMaker("playButton", "green", "black", "Play", [160, 270], [100, 50]);
-		playButtonClick();
+		buttonClick("playButton", true);
 	} else if (snakeBoard.gamePause) {
 		console.log("pause");
 		snakeBoard.ctx.font = "40px Arial";
@@ -246,7 +248,7 @@ function loopHandler() { // game loop!
 		snakeBoard.ctx.fillText("Paused", 120, 250);
 
 		var unpauseButton = new buttonMaker("unpauseButton", "green", "black", "Play", [160, 270], [100, 50]);
-		unpauseButtonClick();
+		buttonClick("unpauseButton");
 	} else {
 		setTimeout(loopHandler, 100);
 	}
