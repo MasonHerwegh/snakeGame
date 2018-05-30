@@ -104,7 +104,7 @@ function game(currentCanvas) {
 			}
 
 			if (this.score == 5) {
-				this.gameWon = true;
+				this.gameOver = true;
 			}
 		}
 
@@ -216,23 +216,16 @@ function loopHandler() { // game loop!
 	snakeBoard.ctx.fillStyle = "White";
 	snakeBoard.ctx.fillText("Score: " + snakeBoard.score, 300, 9);
 
-	if (snakeBoard.gameOver) {	//TODO: merge gameOver, gameWon, and gamePause flags
+	if (snakeBoard.gameOver) {
 		console.log("You lose, good day sir!");
 		snakeBoard.ctx.font = "40px Arial";
 		snakeBoard.ctx.fillStyle = "black";
-		snakeBoard.ctx.fillText("You Lose!", 120, 250);
 
-		snakeBoard.snakeTiles = [];
-		snakeBoard.snakeDirection = "up";
-		//reinitializes snake
-		snakeBoard.snakeTiles.push(new snakeTile(snakeBoard.colCount / 2, snakeBoard.rowCount / 2));
-
-		var playButton = new buttonMaker("playButton", "green", "black", "Play", [160, 270], [100, 50]);
-		buttonClick("playButton", true);
-	} else if (snakeBoard.gameWon) {
-		snakeBoard.ctx.font = "40px Arial";
-		snakeBoard.ctx.fillStyle = "black";
-		snakeBoard.ctx.fillText("You Win!", 120, 250);
+		if (snakeBoard.score == 5){
+			snakeBoard.ctx.fillText("You Win!", 120, 250);
+		} else {
+			snakeBoard.ctx.fillText("You Lose!", 120, 250);
+		}
 
 		snakeBoard.snakeTiles = [];
 		snakeBoard.snakeDirection = "up";
