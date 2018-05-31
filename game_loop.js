@@ -76,38 +76,7 @@ function game(currentCanvas) {
 	
 	//When an arrow key is pressed their x or y coordinate goes up or down by 1
 	//TODO: move snakeMove function out of game object
-	this.snakeMove = function() {
-		let deltas = this.delta("move");
-
-		//Makes the first snake tile the "head" and when it moves makes the first tile the "newHead"
-		let snakeHead = this.snakeTiles[0];
-		let newHead = new snakeTile(snakeHead.tileX + deltas[0], snakeHead.tileY + deltas[1]);
-		
-		// detect if snake has collided with itself or a wall or a food
-		for (var i = 0; i < this.snakeTiles.length; i++) {
-			//If snake has collided with itself you lose
-			if (newHead.tileX == this.snakeTiles[i].tileX && newHead.tileY == this.snakeTiles[i].tileY || newHead.tileX <= 0 || newHead.tileY <= 0 || newHead.tileX >= this.colCount - 1 || newHead.tileY >= this.rowCount - 1) {
-				//snake has collided with self or wall!
-				this.gameOver = true;
-			}
-
-			//If snake has collided with food it grows
-			if (newHead.tileX == this.food.foodCoords[0] && newHead.tileY == this.food.foodCoords[1]) {
-				this.score++;
-				snakeGrow();
-				this.food.moveSelf();
-			}
-
-			if (this.score == 5) {
-				this.gameOver = true;
-			}
-		}
-
-		if (!this.gameOver && !this.gameWon && !this.gamePause) { //if we haven't lost by collision...
-			this.snakeTiles.unshift(newHead); //add new head tile to front of snakeTiles
-			this.snakeTiles.pop();	//remove old tail tile from end of snakeTiles
-		}
-	};
+	
 
 	this.delta = function(mode) {
 		let deltaPatterns = [[0, 1], [0, -1], [1, 0], [-1, 0]];
@@ -155,6 +124,39 @@ function wallTile(x, y) {
 
 function snakeTile(x, y) {
 	tile.call(this, x, y, "white");
+
+	this.snakeMove = function() {
+		let deltas = snakeBoard.delta("move");
+
+		//Makes the first snake tile the "head" and when it moves makes the first tile the "newHead"
+		let snakeHead = snakeBoard.snakeTiles[0];
+		let newHead = new snakeTile(snakeHead.tileX + deltas[0], snakeHead.tileY + deltas[1]);
+		
+		// detect if snake has collided with itself or a wall or a food
+		for (var i = 0; i < snakeBoard.snakeTiles.length; i++) {
+			//If snake has collided with itself you lose
+			if (newHead.tileX == snakeBoard.snakeTiles[i].tileX && newHead.tileY == snakeBoard.snakeTiles[i].tileY || newHead.tileX <= 0 || newHead.tileY <= 0 || newHead.tileX >= snakeBoard.colCount - 1 || newHead.tileY >= snakeBoard.rowCount - 1) {
+				//snake has collided with self or wall!
+				this.gameOver = true;
+			}
+	
+			//If snake has collided with food it grows
+			if (newHead.tileX == snakeBoard.food.foodCoords[0] && newHead.tileY == snakeBoard.food.foodCoords[1]) {
+				snakeBoard.score++;
+				snakeGrow();
+				snakeBoard.food.moveSelf();
+			}
+	
+			if (snakeBoard.score == 5) {
+				this.gameOver = true;
+			}
+		}
+
+		if (!this.gameOver && !this.gamePause) { //if we haven't lost by collision...
+			snakeBoard.snakeTiles.unshift(newHead); //add new head tile to front of snakeTiles
+			snakeBoard.snakeTiles.pop();	//remove old tail tile from end of snakeTiles
+		}
+	}
 }
 
 function foodTile(x, y) {
@@ -204,7 +206,7 @@ function snakeMoveHandler(event) {
 		snakeBoard.snakeDirection = "down";
 	}
 
-	if (event.keyCode == 16 && !snakeBoard.gameWon && !snakeBoard.gameOver) {
+	if (event.keyCode == 16 && !snakeBoard.gameOver) {
 		snakeBoard.gamePause = true;
 	}
 }
@@ -214,7 +216,7 @@ function loopHandler() { // game loop!
 	// anything that should happen every game "tick" //Every game tick lasts 100 ms
 	// should go in this function
 
-	snakeBoard.snakeMove();
+	snakeBoard.snakeTiles[0].snakeMove();
 	snakeBoard.renderAll();
 	
 	//Puts Score on screen
@@ -222,7 +224,7 @@ function loopHandler() { // game loop!
 	snakeBoard.ctx.fillStyle = "White";
 	snakeBoard.ctx.fillText("Score: " + snakeBoard.score, 300, 9);
 
-	if (snakeBoard.gameOver) {
+	if (snakeBoard.snakeTiles[0].gameOver) {
 		console.log("You lose, good day sir!");
 		snakeBoard.ctx.font = "40px Arial";
 		snakeBoard.ctx.fillStyle = "black";
