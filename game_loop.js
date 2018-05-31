@@ -77,8 +77,7 @@ function game(currentCanvas) {
 			this.snakeTiles[i].render();
 		}
 		
-		//this.foodOverlap();
-		console.log(tile.x, tile.y);
+		this.foodOverlap();
 		food.render();
 	};
 	
@@ -103,7 +102,7 @@ function game(currentCanvas) {
 			if (newHead.tileX == food.foodCoords[0] && newHead.tileY == food.foodCoords[1]) {
 				this.score++;
 				snakeGrow();
-				this.moveFood();
+				food.moveSelf();
 			}
 
 			if (this.score == 5) {
@@ -168,16 +167,18 @@ function snakeTile(x, y) {
 function foodTile(x, y) {
 	tile.call(this, x, y, "yellow");
 
-	this.moveSelf = function() {
-		this.getRndInteger = function(min, max) {
-			return Math.floor(Math.random() * (max - min) ) + min;
-		};
+	this.getRndInteger = function(min, max) {
+		return Math.floor(Math.random() * (max - min) ) + min;
+	};
 
+	this.moveSelf = function() {
 		this.foodCoords = [this.getRndInteger(1, this.colCount - 2), this.getRndInteger(1, this.rowCount - 2)];
 		
-		tile.x = this.foodCoords[0];
-		tile.y = this.foodCoords[1];
-	}
+		this.tileX = this.foodCoords[0];
+		this.tileY = this.foodCoords[1];
+		this.pixelX = this.tileX * this.scale;
+		this.pixelY = this.tileY * this.scale;
+	};
 }
 
 function emptyTile(x, y) {
@@ -189,11 +190,11 @@ snakeTile.prototype = new tile();
 foodTile.prototype = new tile();
 emptyTile.prototype = new tile();
 
-var food = new foodTile();
+var food = new foodTile(1, 1);
 
 var snakeBoard = new game(tile.prototype.c);
 food.moveSelf();
-snakeBoard.renderAll();
+//snakeBoard.renderAll();
 
 
 function snakeMoveHandler(event) {
