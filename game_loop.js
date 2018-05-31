@@ -20,7 +20,7 @@ function game(currentCanvas) {
 	this.snakeTiles = [];
 	this.snakeDirection = "up";
 	this.gameOver = false;
-	this.food = 0;
+	this.food = new foodTile(1, 1);
 	this.score = 0;
 
 	//Initialize Snake
@@ -47,24 +47,17 @@ function game(currentCanvas) {
 		while(true) {
 				
 			for(i = 0; i < snakeCoords.length; i++) {
-				if(snakeCoords[i][0] == food.foodCoords[0] && snakeCoords[i][1] == food.foodCoords[1]) {
-					food.moveSelf();
+				if(snakeCoords[i][0] == this.food.foodCoords[0] && snakeCoords[i][1] == this.food.foodCoords[1]) {
+					this.food.moveSelf();
 					overlapFlag = true;
 				}
 			}
 
 			if(!overlapFlag) {
-				//this.food = new foodTile(this.foodCoords[0], this.foodCoords[1]);
-				//food.x = food.foodCoords[0];
-				//food.y = food.foodCoords[1];
 				break;
 			}
 		}
 	}
-
-	
-	//TODO: Move moveFood out of game object
-	
 
 	this.renderAll = function() {
 		this.ctx.clearRect(0, 0, this.c.width, this.c.height);
@@ -78,7 +71,7 @@ function game(currentCanvas) {
 		}
 		
 		this.foodOverlap();
-		food.render();
+		this.food.render();
 	};
 	
 	//When an arrow key is pressed their x or y coordinate goes up or down by 1
@@ -99,10 +92,10 @@ function game(currentCanvas) {
 			}
 
 			//If snake has collided with food it grows
-			if (newHead.tileX == food.foodCoords[0] && newHead.tileY == food.foodCoords[1]) {
+			if (newHead.tileX == this.food.foodCoords[0] && newHead.tileY == this.food.foodCoords[1]) {
 				this.score++;
 				snakeGrow();
-				food.moveSelf();
+				this.food.moveSelf();
 			}
 
 			if (this.score == 5) {
@@ -190,12 +183,8 @@ snakeTile.prototype = new tile();
 foodTile.prototype = new tile();
 emptyTile.prototype = new tile();
 
-var food = new foodTile(1, 1);
-
 var snakeBoard = new game(tile.prototype.c);
-food.moveSelf();
-//snakeBoard.renderAll();
-
+snakeBoard.food.moveSelf();
 
 function snakeMoveHandler(event) {
 
