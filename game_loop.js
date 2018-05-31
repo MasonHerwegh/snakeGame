@@ -36,34 +36,35 @@ function game(currentCanvas) {
 		}
 	}
 	
-	this.getRndInteger = function(min, max) {
-    		return Math.floor(Math.random() * (max - min) ) + min;
-	};
-	
-	//TODO: Move moveFood out of game object
-	this.moveFood = function() {
+	this.foodOverlap = function() {
 		let snakeCoords = [];
 		let overlapFlag = false;
-		
+			
 		for(i = 0; i < this.snakeTiles.length; i++) {
 			snakeCoords.push([this.snakeTiles[i].tileX, this.snakeTiles[i].tileY]);
 		}
 
 		while(true) {
-			this.foodCoords = [this.getRndInteger(1, this.colCount - 2), this.getRndInteger(1, this.rowCount - 2)];
-			
+				
 			for(i = 0; i < snakeCoords.length; i++) {
-				if(snakeCoords[i][0] == this.foodCoords[0] && snakeCoords[i][1] == this.foodCoords[1]) {
+				if(snakeCoords[i][0] == food.foodCoords[0] && snakeCoords[i][1] == food.foodCoords[1]) {
+					food.moveSelf();
 					overlapFlag = true;
 				}
 			}
-	
+
 			if(!overlapFlag) {
-				this.food = new foodTile(this.foodCoords[0], this.foodCoords[1]);
+				//this.food = new foodTile(this.foodCoords[0], this.foodCoords[1]);
+				//food.x = food.foodCoords[0];
+				//food.y = food.foodCoords[1];
 				break;
 			}
 		}
-	};
+	}
+
+	
+	//TODO: Move moveFood out of game object
+	
 
 	this.renderAll = function() {
 		this.ctx.clearRect(0, 0, this.c.width, this.c.height);
@@ -76,7 +77,9 @@ function game(currentCanvas) {
 			this.snakeTiles[i].render();
 		}
 		
-		this.food.render();
+		//this.foodOverlap();
+		console.log(tile.x, tile.y);
+		food.render();
 	};
 	
 	//When an arrow key is pressed their x or y coordinate goes up or down by 1
@@ -97,9 +100,9 @@ function game(currentCanvas) {
 			}
 
 			//If snake has collided with food it grows
-			if (newHead.tileX == this.foodCoords[0] && newHead.tileY == this.foodCoords[1]) {
+			if (newHead.tileX == food.foodCoords[0] && newHead.tileY == food.foodCoords[1]) {
 				this.score++;
-				this.snakeGrow();
+				snakeGrow();
 				this.moveFood();
 			}
 
@@ -114,15 +117,6 @@ function game(currentCanvas) {
 		}
 	};
 
-	this.snakeGrow = function() {
-		let snakeTail = this.snakeTiles[this.snakeTiles.length - 1];
-		let deltas = this.delta("grow");
-		let newTail = new snakeTile(snakeTail.tileX + deltas[0], snakeTail.tileY + deltas[1]);
-
-		this.snakeTiles.push(newTail);
-		console.log("grew snake, length is: " + this.snakeTiles.length);
-	};
-
 	this.delta = function(mode) {
 		let deltaPatterns = [[0, 1], [0, -1], [1, 0], [-1, 0]];
 
@@ -135,6 +129,15 @@ function game(currentCanvas) {
 		if (this.snakeDirection == "left" && mode == "move") 	{ return deltaPatterns[3]; }
 		if (this.snakeDirection == "right" && mode == "move") 	{ return deltaPatterns[2]; }
 	};
+}
+
+function snakeGrow() {
+	let snakeTail = snakeBoard.snakeTiles[snakeBoard.snakeTiles.length - 1];
+	let deltas = snakeBoard.delta("grow");
+	let newTail = new snakeTile(snakeTail.tileX + deltas[0], snakeTail.tileY + deltas[1]);
+
+	snakeBoard.snakeTiles.push(newTail);
+	console.log("grew snake, length is: " + snakeBoard.snakeTiles.length);
 }
 
 function tile(x, y, color) {
@@ -164,6 +167,17 @@ function snakeTile(x, y) {
 
 function foodTile(x, y) {
 	tile.call(this, x, y, "yellow");
+
+	this.moveSelf = function() {
+		this.getRndInteger = function(min, max) {
+			return Math.floor(Math.random() * (max - min) ) + min;
+		};
+
+		this.foodCoords = [this.getRndInteger(1, this.colCount - 2), this.getRndInteger(1, this.rowCount - 2)];
+		
+		tile.x = this.foodCoords[0];
+		tile.y = this.foodCoords[1];
+	}
 }
 
 function emptyTile(x, y) {
@@ -175,8 +189,10 @@ snakeTile.prototype = new tile();
 foodTile.prototype = new tile();
 emptyTile.prototype = new tile();
 
+var food = new foodTile();
+
 var snakeBoard = new game(tile.prototype.c);
-snakeBoard.moveFood();
+food.moveSelf();
 snakeBoard.renderAll();
 
 
