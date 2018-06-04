@@ -18,12 +18,25 @@ function game(currentCanvas) {
 
 	this.tiles = [];
 	this.snakeTiles = [];
+	this.wallTiles = [];
 	this.snakeDirection = "up";
 	this.gameOver = false;
 	this.food = new foodTile(1, 1);
 	this.score = 0;
 	this.gameOver = false;
 	this.gamePause = false;
+	
+	this.appleImg = document.createElement("img");
+	this.appleImg.src = "apple.png";
+
+	this.emptyImg = document.createElement("img");
+	this.emptyImg.src = "grass.png";
+	
+	this.wallImg = document.createElement("img");
+	this.wallImg.src = "wall.png";
+	
+	this.snakeImg1 = document.createElement("img");
+	this.snakeImg1.src = "snake-body.png";
 
 	//Initialize Snake
 	this.snakeTiles.push(new snakeTile(this.colCount / 2, this.rowCount / 2));
@@ -31,7 +44,7 @@ function game(currentCanvas) {
 	for (i = 0; i < this.colCount; i++) {
 		for (j = 0; j < this.rowCount; j++) {
 			if (i == 0 || j == 0 || i == this.colCount - 1 || j == this.rowCount - 1) {
-				this.tiles.push(new wallTile(i, j));
+				this.wallTiles.push(new wallTile(i, j));
 			} else {
 				this.tiles.push(new emptyTile(i, j));
 			}
@@ -65,15 +78,19 @@ function game(currentCanvas) {
 		this.ctx.clearRect(0, 0, this.c.width, this.c.height);
 
 		for (var i = 0; i < this.tiles.length; i++) {
-			this.tiles[i].render();
+			this.tiles[i].render(this.emptyImg);
+		}
+		
+		for (var i = 0; i < this.wallTiles.length; i++) {
+			this.wallTiles[i].render(this.wallImg);
 		}
 		
 		for(var i = 0; i < this.snakeTiles.length; i++) {
-			this.snakeTiles[i].render();
+			this.snakeTiles[i].render(this.snakeImg1);
 		}
 		
 		this.foodOverlap();
-		this.food.render();
+		this.food.render(this.appleImg);
 	};
 	
 	//When an arrow key is pressed their x or y coordinate goes up or down by 1
@@ -110,11 +127,15 @@ function tile(x, y, color) {
 	this.pixelY = this.tileY * this.scale;
 	this.color = color;
 	
-	this.render = function() {
-		this.ctx.fillStyle = this.color;
+	this.render = function(img) {
+		if(img) {
+			this.ctx.drawImage(img, this.pixelX, this.pixelY, this.scale, this.scale);
+		} else {
+			this.ctx.fillStyle = this.color;
 
-		//fillRect needs pixel coordinates, not tile coordinates
-		this.ctx.fillRect(this.pixelX, this.pixelY, this.scale, this.scale);
+			//fillRect needs pixel coordinates, not tile coordinates
+			this.ctx.fillRect(this.pixelX, this.pixelY, this.scale, this.scale);
+		}
 	};
 }
 
