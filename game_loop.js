@@ -37,6 +37,9 @@ function game(currentCanvas) {
 	
 	this.snakeImg1 = document.createElement("img");
 	this.snakeImg1.src = "snake-body.png";
+	
+	this.snakeImg2 = document.createElement("img");
+	this.snakeImg2.src = "snake-head.png";
 
 	//Initialize Snake
 	this.snakeTiles.push(new snakeTile(this.colCount / 2, this.rowCount / 2));
@@ -88,6 +91,8 @@ function game(currentCanvas) {
 		for(var i = 0; i < this.snakeTiles.length; i++) {
 			this.snakeTiles[i].render(this.snakeImg1);
 		}
+		
+		this.snakeTiles[0].render(this.snakeImg2);
 		
 		this.foodOverlap();
 		this.food.render(this.appleImg);
