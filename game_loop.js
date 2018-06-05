@@ -106,7 +106,15 @@ function game(currentCanvas) {
 			this.snakeTiles[i].render(this.snakeImg1);
 		}
 		
-		this.drawRotated(90, this.snakeTiles[0], this.snakeImg2);
+		if (this.snakeDirection == "down") {
+			this.drawRotated(0, this.snakeTiles[0], this.snakeImg2);
+		} else if (this.snakeDirection == "left") {
+			this.drawRotated(90, this.snakeTiles[0], this.snakeImg2);
+		} else if (this.snakeDirection == "up") {
+			this.drawRotated(180, this.snakeTiles[0], this.snakeImg2);
+		} else if (this.snakeDirection == "right") {
+			this.drawRotated(270, this.snakeTiles[0], this.snakeImg2);
+		}
 		
 		this.foodOverlap();
 		this.food.render(this.appleImg);
