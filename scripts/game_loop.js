@@ -26,21 +26,11 @@ function game(currentCanvas) {
 	this.gameOver = false;
 	this.gamePause = false;
 	
-	//TODO: Make function to make images
-	this.appleImg = document.createElement("img");
-	this.appleImg.src = "media/graphics/apple.png";
-
-	this.emptyImg = document.createElement("img");
-	this.emptyImg.src = "media/graphics/grass.png";
-	
-	this.wallImg = document.createElement("img");
-	this.wallImg.src = "media/graphics/wall.png";
-	
-	this.snakeImg1 = document.createElement("img");
-	this.snakeImg1.src = "media/graphics/snake-body.png";
-	
-	this.snakeImg2 = document.createElement("img");
-	this.snakeImg2.src = "media/graphics/snake-head.png";
+	this.appleImg = new createImage("media/graphics/apple.png");
+	this.emptyImg = new createImage("media/graphics/grass.png");
+	this.wallImg = new createImage("media/graphics/wall.png");
+	this.snakeImg1 = new createImage("media/graphics/snake-body.png");
+	this.snakeImg2 = new createImage("media/graphics/snake-head.png");
 
 	//Initialize Snake
 	this.snakeTiles.push(new snakeTile(this.colCount / 2, this.rowCount / 2));
@@ -96,29 +86,29 @@ function game(currentCanvas) {
 		this.ctx.clearRect(0, 0, this.c.width, this.c.height);
 
 		for (var i = 0; i < this.tiles.length; i++) {
-			this.tiles[i].render(this.emptyImg);
+			this.tiles[i].render(this.emptyImg.i);
 		}
 		
 		for (var i = 0; i < this.wallTiles.length; i++) {
-			this.wallTiles[i].render(this.wallImg);
+			this.wallTiles[i].render(this.wallImg.i);
 		}
 		
 		for(var i = 0; i < this.snakeTiles.length; i++) {
-			this.snakeTiles[i].render(this.snakeImg1);
+			this.snakeTiles[i].render(this.snakeImg1.i);
 		}
 		
 		if (this.snakeDirection == "down") {
-			this.drawRotated(0, this.snakeTiles[0], this.snakeImg2);
+			this.drawRotated(0, this.snakeTiles[0], this.snakeImg2.i);
 		} else if (this.snakeDirection == "left") {
-			this.drawRotated(90, this.snakeTiles[0], this.snakeImg2);
+			this.drawRotated(90, this.snakeTiles[0], this.snakeImg2.i);
 		} else if (this.snakeDirection == "up") {
-			this.drawRotated(180, this.snakeTiles[0], this.snakeImg2);
+			this.drawRotated(180, this.snakeTiles[0], this.snakeImg2.i);
 		} else if (this.snakeDirection == "right") {
-			this.drawRotated(270, this.snakeTiles[0], this.snakeImg2);
+			this.drawRotated(270, this.snakeTiles[0], this.snakeImg2.i);
 		}
 		
 		this.foodOverlap();
-		this.food.render(this.appleImg);
+		this.food.render(this.appleImg.i);
 	};
 
 	this.delta = function(mode) {
@@ -152,6 +142,11 @@ function sound(src) {
 	}
 }
 
+function createImage(src) {
+	this.i = document.createElement("img");
+	this.i.src = src;
+}
+
 function snakeGrow() {
 	let snakeTail = snakeBoard.snakeTiles[snakeBoard.snakeTiles.length - 1];
 	let deltas = snakeBoard.delta("grow");
@@ -169,14 +164,7 @@ function tile(x, y, color) {
 	this.color = color;
 	
 	this.render = function(img) {
-		if(img) {
 			this.ctx.drawImage(img, this.pixelX, this.pixelY, this.scale, this.scale);
-		} else {
-			this.ctx.fillStyle = this.color;
-
-			//fillRect needs pixel coordinates, not tile coordinates
-			this.ctx.fillRect(this.pixelX, this.pixelY, this.scale, this.scale);
-		}
 	};
 }
 
