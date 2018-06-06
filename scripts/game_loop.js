@@ -26,6 +26,7 @@ function game(currentCanvas) {
 	this.gameOver = false;
 	this.gamePause = false;
 	
+	//TODO: Make function to make images
 	this.appleImg = document.createElement("img");
 	this.appleImg.src = "media/graphics/apple.png";
 
@@ -63,7 +64,6 @@ function game(currentCanvas) {
 		}
 
 		while(true) {
-				
 			for(i = 0; i < snakeCoords.length; i++) {
 				if(snakeCoords[i][0] == this.food.foodCoords[0] && snakeCoords[i][1] == this.food.foodCoords[1]) {
 					this.food.moveSelf();
@@ -77,6 +77,7 @@ function game(currentCanvas) {
 		}
 	}
 	
+	//TODO: move drawRotated to the tile function
 	this.drawRotated = function(degrees, tileToRender, renderImage) {
 		let savedPixelX = tileToRender.pixelX;
 		let savedPixelY = tileToRender.pixelY;
@@ -133,6 +134,8 @@ function game(currentCanvas) {
 		if (this.snakeDirection == "right" && mode == "move") 	{ return deltaPatterns[2]; }
 	};
 }
+
+//TODO: create snake object and move snake related functions into it
 
 function sound(src) {
 	this.sound = document.createElement("audio");
@@ -292,6 +295,7 @@ function loopHandler() { // game loop!
 	snakeBoard.ctx.fillStyle = "White";
 	snakeBoard.ctx.fillText("Score: " + snakeBoard.score, 300, 9);
 
+	//TODO: move stuff like ctx to own function
 	if (snakeBoard.gameOver) {
 		console.log("You lose, good day sir!");
 		snakeBoard.ctx.font = "40px Arial";
