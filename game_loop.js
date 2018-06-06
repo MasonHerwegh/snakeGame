@@ -119,10 +119,6 @@ function game(currentCanvas) {
 		this.foodOverlap();
 		this.food.render(this.appleImg);
 	};
-	
-	//When an arrow key is pressed their x or y coordinate goes up or down by 1
-	//TODO: move snakeMove function out of game object
-	
 
 	this.delta = function(mode) {
 		let deltaPatterns = [[0, 1], [0, -1], [1, 0], [-1, 0]];
@@ -193,7 +189,9 @@ function snakeTile(x, y) {
 	this.snakeMove = function() {
 		let deltas = snakeBoard.delta("move");
 		
-		//let collideSound = new sound("insert sound");
+		let foodSound = new sound("chomp.wav");
+		let hitSound = new sound("hit.wav");
+		let winSound = new sound("win.wav");
 
 		//Makes the first snake tile the "head" and when it moves makes the first tile the "newHead"
 		let snakeHead = snakeBoard.snakeTiles[0];
@@ -204,17 +202,20 @@ function snakeTile(x, y) {
 			//If snake has collided with itself you lose
 			if (newHead.tileX == snakeBoard.snakeTiles[i].tileX && newHead.tileY == snakeBoard.snakeTiles[i].tileY || newHead.tileX <= 0 || newHead.tileY <= 0 || newHead.tileX >= snakeBoard.colCount - 1 || newHead.tileY >= snakeBoard.rowCount - 1) {
 				//snake has collided with self or wall!
+				hitSound.play();
 				snakeBoard.gameOver = true;
 			}
 	
 			//If snake has collided with food it grows
 			if (newHead.tileX == snakeBoard.food.foodCoords[0] && newHead.tileY == snakeBoard.food.foodCoords[1]) {
 				snakeBoard.score++;
+				foodSound.play();
 				snakeGrow();
 				snakeBoard.food.moveSelf();
 			}
 	
 			if (snakeBoard.score == 5) {
+				winSound.play();
 				snakeBoard.gameOver = true;
 			}
 		}
