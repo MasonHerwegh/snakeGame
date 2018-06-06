@@ -68,19 +68,7 @@ function game(currentCanvas) {
 	}
 	
 	//TODO: move drawRotated to the tile function
-	this.drawRotated = function(degrees, tileToRender, renderImage) {
-		let savedPixelX = tileToRender.pixelX;
-		let savedPixelY = tileToRender.pixelY;
-		this.ctx.save();
-		this.ctx.translate(tileToRender.pixelX+this.scale/2, tileToRender.pixelY+this.scale/2);
-		tileToRender.pixelX = -this.scale/2;
-		tileToRender.pixelY = -this.scale/2;
-		this.ctx.rotate(degrees*Math.PI/180);
-		tileToRender.render(renderImage);
-		tileToRender.pixelX = savedPixelX;
-		tileToRender.pixelY = savedPixelY;
-		this.ctx.restore();
-	}
+	
 
 	this.renderAll = function() {
 		this.ctx.clearRect(0, 0, this.c.width, this.c.height);
@@ -98,13 +86,13 @@ function game(currentCanvas) {
 		}
 		
 		if (this.snakeDirection == "down") {
-			this.drawRotated(0, this.snakeTiles[0], this.snakeImg2.i);
+			tile.prototype.drawRotated(0, this.snakeTiles[0], this.snakeImg2.i);
 		} else if (this.snakeDirection == "left") {
-			this.drawRotated(90, this.snakeTiles[0], this.snakeImg2.i);
+			tile.prototype.drawRotated(90, this.snakeTiles[0], this.snakeImg2.i);
 		} else if (this.snakeDirection == "up") {
-			this.drawRotated(180, this.snakeTiles[0], this.snakeImg2.i);
+			tile.prototype.drawRotated(180, this.snakeTiles[0], this.snakeImg2.i);
 		} else if (this.snakeDirection == "right") {
-			this.drawRotated(270, this.snakeTiles[0], this.snakeImg2.i);
+			tile.prototype.drawRotated(270, this.snakeTiles[0], this.snakeImg2.i);
 		}
 		
 		this.foodOverlap();
@@ -165,6 +153,20 @@ function tile(x, y, color) {
 	
 	this.render = function(img) {
 			this.ctx.drawImage(img, this.pixelX, this.pixelY, this.scale, this.scale);
+	};
+	
+	this.drawRotated = function(degrees, tileToRender, renderImage) {
+		let savedPixelX = tileToRender.pixelX;
+		let savedPixelY = tileToRender.pixelY;
+		this.ctx.save();
+		this.ctx.translate(tileToRender.pixelX+this.scale/2, tileToRender.pixelY+this.scale/2);
+		tileToRender.pixelX = -this.scale/2;
+		tileToRender.pixelY = -this.scale/2;
+		this.ctx.rotate(degrees*Math.PI/180);
+		tileToRender.render(renderImage);
+		tileToRender.pixelX = savedPixelX;
+		tileToRender.pixelY = savedPixelY;
+		this.ctx.restore();
 	};
 }
 
