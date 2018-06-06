@@ -27,19 +27,19 @@ function game(currentCanvas) {
 	this.gamePause = false;
 	
 	this.appleImg = document.createElement("img");
-	this.appleImg.src = "apple.png";
+	this.appleImg.src = "media/graphics/apple.png";
 
 	this.emptyImg = document.createElement("img");
-	this.emptyImg.src = "grass.png";
+	this.emptyImg.src = "media/graphics/grass.png";
 	
 	this.wallImg = document.createElement("img");
-	this.wallImg.src = "wall.png";
+	this.wallImg.src = "media/graphics/wall.png";
 	
 	this.snakeImg1 = document.createElement("img");
-	this.snakeImg1.src = "snake-body.png";
+	this.snakeImg1.src = "media/graphics/snake-body.png";
 	
 	this.snakeImg2 = document.createElement("img");
-	this.snakeImg2.src = "snake-head.png";
+	this.snakeImg2.src = "media/graphics/snake-head.png";
 
 	//Initialize Snake
 	this.snakeTiles.push(new snakeTile(this.colCount / 2, this.rowCount / 2));
@@ -189,9 +189,9 @@ function snakeTile(x, y) {
 	this.snakeMove = function() {
 		let deltas = snakeBoard.delta("move");
 		
-		let foodSound = new sound("chomp.wav");
-		let hitSound = new sound("hit.wav");
-		let winSound = new sound("win.wav");
+		let foodSound = new sound("media/sounds/chomp.wav");
+		let hitSound = new sound("media/sounds/hit.wav");
+		let winSound = new sound("media/sounds/win.wav");
 
 		//Makes the first snake tile the "head" and when it moves makes the first tile the "newHead"
 		let snakeHead = snakeBoard.snakeTiles[0];
