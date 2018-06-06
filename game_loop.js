@@ -138,6 +138,21 @@ function game(currentCanvas) {
 	};
 }
 
+function sound(src) {
+	this.sound = document.createElement("audio");
+	this.sound.src = src;
+	this.sound.setAttribute("preload", "auto");
+	this.sound.setAttribute("controls", "none");
+	this.sound.style.display = "none";
+	document.body.appendChild(this.sound);
+	this.play = function() {
+		this.sound.play();
+	}
+	this.stop = function() {
+		this.sound.stop();
+	}
+}
+
 function snakeGrow() {
 	let snakeTail = snakeBoard.snakeTiles[snakeBoard.snakeTiles.length - 1];
 	let deltas = snakeBoard.delta("grow");
@@ -177,6 +192,8 @@ function snakeTile(x, y) {
 
 	this.snakeMove = function() {
 		let deltas = snakeBoard.delta("move");
+		
+		//let collideSound = new sound("insert sound");
 
 		//Makes the first snake tile the "head" and when it moves makes the first tile the "newHead"
 		let snakeHead = snakeBoard.snakeTiles[0];
