@@ -86,13 +86,13 @@ function game(currentCanvas) {
 		}
 		
 		if (this.snakeDirection == "down") {
-			tile.prototype.drawRotated(0, this.snakeTiles[0], this.snakeImg2.i);
+			snakeTile.prototype.drawRotated(0, this.snakeTiles[0], this.snakeImg2.i);
 		} else if (this.snakeDirection == "left") {
-			tile.prototype.drawRotated(90, this.snakeTiles[0], this.snakeImg2.i);
+			snakeTile.prototype.drawRotated(90, this.snakeTiles[0], this.snakeImg2.i);
 		} else if (this.snakeDirection == "up") {
-			tile.prototype.drawRotated(180, this.snakeTiles[0], this.snakeImg2.i);
+			snakeTile.prototype.drawRotated(180, this.snakeTiles[0], this.snakeImg2.i);
 		} else if (this.snakeDirection == "right") {
-			tile.prototype.drawRotated(270, this.snakeTiles[0], this.snakeImg2.i);
+			snakeTile.prototype.drawRotated(270, this.snakeTiles[0], this.snakeImg2.i);
 		}
 		
 		this.foodOverlap();
