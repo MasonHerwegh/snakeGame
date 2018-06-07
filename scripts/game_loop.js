@@ -66,9 +66,6 @@ function game(currentCanvas) {
 			}
 		}
 	}
-	
-	//TODO: move drawRotated to the tile function
-	
 
 	this.renderAll = function() {
 		this.ctx.clearRect(0, 0, this.c.width, this.c.height);
@@ -272,8 +269,43 @@ function snakeMoveHandler(event) {
 	}
 }
 
-function loopHandler() { // game loop!
+function endGame() {
+	console.log("You lose, good day sir!");
+	snakeBoard.ctx.font = "40px Arial";
+	snakeBoard.ctx.fillStyle = "black";
 
+	if (snakeBoard.score == 5){
+		snakeBoard.ctx.fillText("You Win!", 120, 250);
+	} else {
+		snakeBoard.ctx.fillText("You Lose!", 120, 250);
+	}
+
+	snakeBoard.snakeTiles = [];
+	snakeBoard.snakeDirection = "up";
+	//reinitializes snake
+	snakeBoard.snakeTiles.push(new snakeTile(snakeBoard.colCount / 2, snakeBoard.rowCount / 2));
+
+	var playButton = new buttonMaker("playButton", "green", "black", "Play", [160, 270], [100, 50]);
+	buttonClick("playButton", true);
+}
+
+function pauseGame() {
+	console.log("pause");
+	snakeBoard.ctx.font = "40px Arial";
+	snakeBoard.ctx.fillStyle = "black";
+	snakeBoard.ctx.fillText("Paused", 120, 250);
+
+	this.unpauseButton = new buttonMaker("unpauseButton", "green", "black", "Play", [160, 270], [100, 50]);
+	buttonClick("unpauseButton");
+}
+
+function scoreUpdate() {
+	snakeBoard.ctx.font = "11px Arial";
+	snakeBoard.ctx.fillStyle = "White";
+	snakeBoard.ctx.fillText("Score: " + snakeBoard.score, 300, 9);
+}
+
+function loopHandler() { // game loop!
 	// anything that should happen every game "tick" //Every game tick lasts 100 ms
 	// should go in this function
 
@@ -281,37 +313,12 @@ function loopHandler() { // game loop!
 	snakeBoard.renderAll();
 	
 	//Puts Score on screen
-	snakeBoard.ctx.font = "11px Arial";
-	snakeBoard.ctx.fillStyle = "White";
-	snakeBoard.ctx.fillText("Score: " + snakeBoard.score, 300, 9);
+	scoreUpdate();
 
-	//TODO: move stuff like ctx to own function
 	if (snakeBoard.gameOver) {
-		console.log("You lose, good day sir!");
-		snakeBoard.ctx.font = "40px Arial";
-		snakeBoard.ctx.fillStyle = "black";
-
-		if (snakeBoard.score == 5){
-			snakeBoard.ctx.fillText("You Win!", 120, 250);
-		} else {
-			snakeBoard.ctx.fillText("You Lose!", 120, 250);
-		}
-
-		snakeBoard.snakeTiles = [];
-		snakeBoard.snakeDirection = "up";
-		//reinitializes snake
-		snakeBoard.snakeTiles.push(new snakeTile(snakeBoard.colCount / 2, snakeBoard.rowCount / 2));
-
-		var playButton = new buttonMaker("playButton", "green", "black", "Play", [160, 270], [100, 50]);
-		buttonClick("playButton", true);
+		endGame();
 	} else if (snakeBoard.gamePause) {
-		console.log("pause");
-		snakeBoard.ctx.font = "40px Arial";
-		snakeBoard.ctx.fillStyle = "black";
-		snakeBoard.ctx.fillText("Paused", 120, 250);
-
-		var unpauseButton = new buttonMaker("unpauseButton", "green", "black", "Play", [160, 270], [100, 50]);
-		buttonClick("unpauseButton");
+		pauseGame();
 	} else {
 		setTimeout(loopHandler, 100);
 	}
