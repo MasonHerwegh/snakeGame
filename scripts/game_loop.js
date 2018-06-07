@@ -17,7 +17,7 @@ function game(currentCanvas) {
 	this.colCount = Math.floor(this.c.width / this.scale);
 
 	this.tiles = [];
-	this.snakeTiles = [];
+	this.snake = new snake(this.colCount/2, this.rowCount/2, this);
 	this.wallTiles = [];
 	this.snakeDirection = "up";
 	this.gameOver = false;
@@ -32,9 +32,6 @@ function game(currentCanvas) {
 	this.snakeImg1 = new createImage("media/graphics/snake-body.png");
 	this.snakeImg2 = new createImage("media/graphics/snake-head.png");
 
-	//Initialize Snake
-	this.snakeTiles.push(new snakeTile(this.colCount / 2, this.rowCount / 2));
-	
 	for (i = 0; i < this.colCount; i++) {
 		for (j = 0; j < this.rowCount; j++) {
 			if (i == 0 || j == 0 || i == this.colCount - 1 || j == this.rowCount - 1) {
@@ -48,17 +45,19 @@ function game(currentCanvas) {
 	this.foodOverlap = function() {
 		let snakeCoords = [];
 		let overlapFlag = false;
-			
-		for(i = 0; i < this.snakeTiles.length; i++) {
-			snakeCoords.push([this.snakeTiles[i].tileX, this.snakeTiles[i].tileY]);
+		
+		snakeCoords.push([this.snake.head.tileX, this.snake.head.tileY]);
+		
+		for(i = 0; i < this.snake.body.length; i++) {
+			snakeCoords.push([this.snake.body[i].tileX, this.snake.body[i].tileY]);
 		}
 
 		while(true) {
-			for(i = 0; i < snakeCoords.length; i++) {
-				if(snakeCoords[i][0] == this.food.foodCoords[0] && snakeCoords[i][1] == this.food.foodCoords[1]) {
-					this.food.moveSelf();
-					overlapFlag = true;
-				}
+			if (this.snake.colliding(this.food)) {
+				this.food.moveSelf();
+				overlapFlag = true;
+			} else {
+				overlapFlag = false;
 			}
 
 			if(!overlapFlag) {
@@ -78,18 +77,18 @@ function game(currentCanvas) {
 			this.wallTiles[i].render(this.wallImg.i);
 		}
 		
-		for(var i = 0; i < this.snakeTiles.length; i++) {
-			this.snakeTiles[i].render(this.snakeImg1.i);
+		if (this.snakeDirection == "down") {
+			this.snake.head.drawRotated(0, this.snake.head, this.snakeImg2.i);
+		} else if (this.snakeDirection == "left") {
+			this.snake.head.drawRotated(90, this.snake.head, this.snakeImg2.i);
+		} else if (this.snakeDirection == "up") {
+			this.snake.head.drawRotated(180, this.snake.head, this.snakeImg2.i);
+		} else if (this.snakeDirection == "right") {
+			this.snake.head.drawRotated(270, this.snake.head, this.snakeImg2.i);
 		}
 		
-		if (this.snakeDirection == "down") {
-			snakeTile.prototype.drawRotated(0, this.snakeTiles[0], this.snakeImg2.i);
-		} else if (this.snakeDirection == "left") {
-			snakeTile.prototype.drawRotated(90, this.snakeTiles[0], this.snakeImg2.i);
-		} else if (this.snakeDirection == "up") {
-			snakeTile.prototype.drawRotated(180, this.snakeTiles[0], this.snakeImg2.i);
-		} else if (this.snakeDirection == "right") {
-			snakeTile.prototype.drawRotated(270, this.snakeTiles[0], this.snakeImg2.i);
+		for(var i = 0; i < this.snake.body.length; i++) {
+			this.snake.body[i].render(this.snakeImg1.i);
 		}
 		
 		this.foodOverlap();
@@ -111,6 +110,77 @@ function game(currentCanvas) {
 }
 
 //TODO: create snake object and move snake related functions into it
+function snake(x, y, game) {
+	this.head = new tile(x, y, "white");
+	this.body = [];
+	this.game = game;
+	
+	this.foodSound = new sound("media/sounds/chomp.wav");
+	this.hitSound = new sound("media/sounds/hit.wav");
+	this.winSound = new sound("media/sounds/win.wav");
+	
+	this.colliding = function(tileToCheck) {
+		//nothing here yet...
+		if (tileToCheck.tileX == this.head.tileX && tileToCheck.tileY == this.head.tileY) {
+			return true;
+		}
+		
+		for (bodyTile in this.body) {
+			if (tileToCheck.tileX == this.bodyTile.tileX && tileToCheck.tileY == this.bodyTile.tileY) {
+				return true;
+			} else {
+				return false;
+			}
+		}
+	};
+	
+	this.grow = function() {
+		let snakeTail = this.body[this.body.length - 1];
+		let deltas = game.delta("grow");
+		let newTail = new tile(snakeTail.tileX + deltas[0], snakeTail.tileY + deltas[1]);
+
+		this.body.push(newTail);
+		console.log("grew snake, length is: " + this.body.length);
+	}
+	
+	this.move = function() {
+		let deltas = this.game.delta("move");
+
+		//Makes the first snake tile the "head" and when it moves makes the first tile the "newHead"
+		let newHead = new tile(this.head.tileX + deltas[0], this.head.tileY + deltas[1]);
+		
+		// detect if snake has collided with itself or a wall or a food
+		for (var i = 0; i < this.body.length; i++) {
+			//If snake has collided with itself you lose
+			if (newHead.tileX == this.game.body[i].tileX && newHead.tileY == this.game.body[i].tileY || newHead.tileX <= 0 || newHead.tileY <= 0 || newHead.tileX >= this.game.colCount - 1 || newHead.tileY >= this.game.rowCount - 1) {
+				//snake has collided with self or wall!
+				this.hitSound.play();
+				this.game.gameOver = true;
+			}
+	
+			//If snake has collided with food it grows
+			if (newHead.tileX == this.game.food.foodCoords[0] && newHead.tileY == this.game.food.foodCoords[1]) {
+				this.game.score++;
+				this.foodSound.play();
+				this.grow();
+				this.game.food.moveSelf();
+			}
+	
+			if (this.game.score == 5) {
+				this.winSound.play();
+				this.game.gameOver = true;
+			}
+		}
+
+		if (!this.game.gameOver && !this.game.gamePause) { //if we haven't lost by collision...
+			this.body.unshift(newHead); //add new head tile to front of snakeTiles
+			this.head = newHead;
+			this.body.pop();	//remove old tail tile from end of snakeTiles
+		}
+	};
+	
+	
+}
 
 function sound(src) {
 	this.sound = document.createElement("audio");
@@ -130,15 +200,6 @@ function sound(src) {
 function createImage(src) {
 	this.i = document.createElement("img");
 	this.i.src = src;
-}
-
-function snakeGrow() {
-	let snakeTail = snakeBoard.snakeTiles[snakeBoard.snakeTiles.length - 1];
-	let deltas = snakeBoard.delta("grow");
-	let newTail = new snakeTile(snakeTail.tileX + deltas[0], snakeTail.tileY + deltas[1]);
-
-	snakeBoard.snakeTiles.push(newTail);
-	console.log("grew snake, length is: " + snakeBoard.snakeTiles.length);
 }
 
 function tile(x, y, color) {
@@ -173,50 +234,6 @@ function wallTile(x, y) {
 	tile.call(this, x, y, "black");
 }
 
-function snakeTile(x, y) {
-	tile.call(this, x, y, "white");
-
-	this.snakeMove = function() {
-		let deltas = snakeBoard.delta("move");
-		
-		let foodSound = new sound("media/sounds/chomp.wav");
-		let hitSound = new sound("media/sounds/hit.wav");
-		let winSound = new sound("media/sounds/win.wav");
-
-		//Makes the first snake tile the "head" and when it moves makes the first tile the "newHead"
-		let snakeHead = snakeBoard.snakeTiles[0];
-		let newHead = new snakeTile(snakeHead.tileX + deltas[0], snakeHead.tileY + deltas[1]);
-		
-		// detect if snake has collided with itself or a wall or a food
-		for (var i = 0; i < snakeBoard.snakeTiles.length; i++) {
-			//If snake has collided with itself you lose
-			if (newHead.tileX == snakeBoard.snakeTiles[i].tileX && newHead.tileY == snakeBoard.snakeTiles[i].tileY || newHead.tileX <= 0 || newHead.tileY <= 0 || newHead.tileX >= snakeBoard.colCount - 1 || newHead.tileY >= snakeBoard.rowCount - 1) {
-				//snake has collided with self or wall!
-				hitSound.play();
-				snakeBoard.gameOver = true;
-			}
-	
-			//If snake has collided with food it grows
-			if (newHead.tileX == snakeBoard.food.foodCoords[0] && newHead.tileY == snakeBoard.food.foodCoords[1]) {
-				snakeBoard.score++;
-				foodSound.play();
-				snakeGrow();
-				snakeBoard.food.moveSelf();
-			}
-	
-			if (snakeBoard.score == 5) {
-				winSound.play();
-				snakeBoard.gameOver = true;
-			}
-		}
-
-		if (!snakeBoard.gameOver && !snakeBoard.gamePause) { //if we haven't lost by collision...
-			snakeBoard.snakeTiles.unshift(newHead); //add new head tile to front of snakeTiles
-			snakeBoard.snakeTiles.pop();	//remove old tail tile from end of snakeTiles
-		}
-	}
-}
-
 function foodTile(x, y) {
 	tile.call(this, x, y, "yellow");
 
@@ -239,7 +256,6 @@ function emptyTile(x, y) {
 }
 
 wallTile.prototype = new tile();
-snakeTile.prototype = new tile();
 foodTile.prototype = new tile();
 emptyTile.prototype = new tile();
 
@@ -280,10 +296,8 @@ function endGame() {
 		snakeBoard.ctx.fillText("You Lose!", 120, 250);
 	}
 
-	snakeBoard.snakeTiles = [];
+	snakeBoard.snake = new snake(snakeBoard.colCount/2, snakeBoard.rowCount/2, snakeBoard);
 	snakeBoard.snakeDirection = "up";
-	//reinitializes snake
-	snakeBoard.snakeTiles.push(new snakeTile(snakeBoard.colCount / 2, snakeBoard.rowCount / 2));
 
 	var playButton = new buttonMaker("playButton", "green", "black", "Play", [160, 270], [100, 50]);
 	buttonClick("playButton", true);
@@ -309,7 +323,7 @@ function loopHandler() { // game loop!
 	// anything that should happen every game "tick" //Every game tick lasts 100 ms
 	// should go in this function
 
-	snakeBoard.snakeTiles[0].snakeMove();
+	snakeBoard.snake.move();
 	snakeBoard.renderAll();
 	
 	//Puts Score on screen
