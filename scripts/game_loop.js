@@ -55,6 +55,7 @@ function game(currentCanvas) {
 		while(true) {
 			if (this.snake.colliding(this.food)) {
 				this.food.moveSelf();
+				console.log("Snake length is now " + snakeCoords);
 				overlapFlag = true;
 			} else {
 				overlapFlag = false;
@@ -112,7 +113,7 @@ function game(currentCanvas) {
 //TODO: create snake object and move snake related functions into it
 function snake(x, y, game) {
 	this.head = new tile(x, y, "white");
-	this.body = [];
+	this.body = [new tile(x, y, "white")];
 	this.game = game;
 	
 	this.foodSound = new sound("media/sounds/chomp.wav");
@@ -126,7 +127,7 @@ function snake(x, y, game) {
 		}
 		
 		for (bodyTile in this.body) {
-			if (tileToCheck.tileX == this.bodyTile.tileX && tileToCheck.tileY == this.bodyTile.tileY) {
+			if (tileToCheck.tileX == bodyTile.tileX && tileToCheck.tileY == bodyTile.tileY) {
 				return true;
 			} else {
 				return false;
@@ -149,10 +150,13 @@ function snake(x, y, game) {
 		//Makes the first snake tile the "head" and when it moves makes the first tile the "newHead"
 		let newHead = new tile(this.head.tileX + deltas[0], this.head.tileY + deltas[1]);
 		
+		console.log(this.body.length);
+		
+		
 		// detect if snake has collided with itself or a wall or a food
 		for (var i = 0; i < this.body.length; i++) {
 			//If snake has collided with itself you lose
-			if (newHead.tileX == this.game.body[i].tileX && newHead.tileY == this.game.body[i].tileY || newHead.tileX <= 0 || newHead.tileY <= 0 || newHead.tileX >= this.game.colCount - 1 || newHead.tileY >= this.game.rowCount - 1) {
+			if (newHead.tileX == this.game.snake.body[i].tileX && newHead.tileY == this.game.snake.body[i].tileY || newHead.tileX <= 0 || newHead.tileY <= 0 || newHead.tileX >= this.game.colCount - 1 || newHead.tileY >= this.game.rowCount - 1) {
 				//snake has collided with self or wall!
 				this.hitSound.play();
 				this.game.gameOver = true;
@@ -173,7 +177,7 @@ function snake(x, y, game) {
 		}
 
 		if (!this.game.gameOver && !this.game.gamePause) { //if we haven't lost by collision...
-			this.body.unshift(newHead); //add new head tile to front of snakeTiles
+			this.body.unshift(this.head); //add new head tile to front of snakeTiles
 			this.head = newHead;
 			this.body.pop();	//remove old tail tile from end of snakeTiles
 		}
